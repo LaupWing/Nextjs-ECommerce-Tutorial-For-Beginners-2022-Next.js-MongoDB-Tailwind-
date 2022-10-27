@@ -35,6 +35,11 @@ function reducer(state, action){
             }
          }
       }
+      case "CART_REMOVE_ITEM":{
+         const cartItems = state.cart.cartItems.filter(
+            item => item.slug !== action.payload.slug
+         )
+      }
       default:
          return state
    }

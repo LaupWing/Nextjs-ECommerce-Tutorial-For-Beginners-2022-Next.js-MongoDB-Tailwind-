@@ -12,6 +12,10 @@ const CartPage = () => {
       cart
    } = state
 
+   const removeItemHandler = (item)=>{
+      dispatch({})
+   }
+
    return (
       <Layout title={"Shopping Cart"}>
          <h1 className="mb-4 text-xl">Shopping Cart</h1>
@@ -51,7 +55,7 @@ const CartPage = () => {
                                  <td className="p-5 text-right">{item.quantity}</td>
                                  <td className="p-5 text-right">{item.price}</td>
                                  <td className="p-5 text-center">
-                                    <button>
+                                    <button onClick={()=>{}}>
                                        <XCircleIcon/>
                                     </button>
                                  </td>
