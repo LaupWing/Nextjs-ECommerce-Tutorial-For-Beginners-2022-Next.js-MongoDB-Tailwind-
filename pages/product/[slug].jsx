@@ -30,7 +30,13 @@ const ProductPage = () => {
             </div>
             <div>
                <ul>
-                  <li></li>
+                  <li>
+                     <h1 className="text-lg">{product.name}</h1>
+                  </li>
+                  <li>Category: {product.category}</li>
+                  <li>Brand: {product.brand}</li>
+                  <li>{product.rating} of {product.numReviews} reviews</li>
+                  <li>Description: {product.description}</li>
                </ul>
             </div>
          </div>
