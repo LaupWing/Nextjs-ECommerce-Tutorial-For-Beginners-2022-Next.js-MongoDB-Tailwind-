@@ -18,7 +18,7 @@ function reducer(state, action){
 
          if( existItem && (existItem.quantity + 1 > existItem.countInStock)){
             alert("Out of stock")
-            return
+            return state
          }
          const cartItems = existItem ? 
             state.cart.cartItems.map(item=> item.name === existItem.name ? {
