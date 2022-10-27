@@ -1,3 +1,4 @@
+import Head from "next/head"
 import Link from "next/link"
 import React from "react"
 
@@ -12,15 +13,15 @@ const Layout = ({ children, title }) => {
          <div className="flex flex-col min-h-screen justify-between">
             <header>
                <nav className="flex h-12 items-center px-4 justify-between shadow-md">
-                  <Link href={"/"}>
-                     <a className="text-lg font-bold">amazona</a>
+                  <Link className="text-lg font-bold" href={"/"}>
+                     amazona
                   </Link>
                   <div>
-                     <Link href={"/cart"}>
-                        <a className="p-2">Cart</a>
+                     <Link className="p-2" href={"/cart"}>
+                        Cart
                      </Link>
-                     <Link href={"/login"}>
-                        <a className="p-2">Login</a>
+                     <Link className="p-2" href={"/login"}>
+                        Login
                      </Link>
                   </div>
                </nav>
