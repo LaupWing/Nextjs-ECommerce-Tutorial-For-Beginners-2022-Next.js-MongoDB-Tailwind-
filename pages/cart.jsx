@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import React from 'react'
 import { useContext } from "react"
@@ -5,8 +6,8 @@ import Layout from "../components/Layout"
 import { Store } from "../utils/Store"
 
 const CartPage = () => {
-   const {state, dispatch} = useContext(Store)
-   const{
+   const { state, dispatch } = useContext(Store)
+   const {
       cart
    } = state
 
@@ -28,10 +29,38 @@ const CartPage = () => {
                               <th className="p-5">Action</th>
                            </tr>
                         </thead>
+                        <tbody>
+                           {cart.cartItems.map(item => (
+                              <tr key={item.slug} className="border-b">
+                                 <td>
+                                    <Link
+                                       className="flex items-center"
+                                       href={`/product/${item.slug}`}
+                                    >
+                                       <Image
+                                          src={item.image}
+                                          alt={item.name}
+                                          width={50}
+                                          height={50}
+                                       />
+                                       &nbsp;
+                                       {item.name}
+                                    </Link>
+                                 </td>
+                                 <td className="p-5 text-right">{item.quantity}</td>
+                                 <td className="p-5 text-right">{item.price}</td>
+                                 <td className="p-5 text-center">
+                                    <button>
+                                       <XCircleIcon/>
+                                    </button>
+                                 </td>
+                              </tr>
+                           ))}
+                        </tbody>
                      </table>
                   </div>
                </div>
-            ) 
+            )
          }
       </Layout>
    )
