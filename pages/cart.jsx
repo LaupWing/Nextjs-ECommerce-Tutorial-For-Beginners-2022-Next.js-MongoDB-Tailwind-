@@ -4,6 +4,7 @@ import React from 'react'
 import { useContext } from "react"
 import Layout from "../components/Layout"
 import { Store } from "../utils/Store"
+import {XCircleIcon} from "@heroicons/react/24/outline"
 
 const CartPage = () => {
    const { state, dispatch } = useContext(Store)
