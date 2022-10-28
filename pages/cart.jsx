@@ -21,6 +21,17 @@ const CartPage = () => {
       })
    }
 
+   const updateCartHandler = (item, quantity)=>{
+      const _quantity = Number(quantity)
+      dispatch({
+         type: "CART_ADD_ITEM",
+         payload: {
+            ...item,
+            quantity: _quantity
+         }
+      })
+   }
+
    return (
       <Layout title={"Shopping Cart"}>
          <h1 className="mb-4 text-xl">Shopping Cart</h1>
@@ -57,6 +68,23 @@ const CartPage = () => {
                                        {item.name}
                                     </Link>
                                  </td>
+                                 <td className="p-5 text-right">
+                                    <select 
+                                       value={item.quantity}
+                                       onChange={e => updateCartHandler(item, e.target.value)}
+                                    >
+                                       {
+                                          [...Array(item.countInStock).keys()].map(x=> (
+                                             <option 
+                                                value={x+1}
+                                                key={x+1}
+                                             >
+                                                {x+1}
+                                             </option>
+                                          ))
+                                       }
+                                    </select>
+                                 </td>
                                  <td className="p-5 text-right">{item.quantity}</td>
                                  <td className="p-5 text-right">{item.price}</td>
                                  <td className="p-5 text-center">
@@ -73,10 +101,10 @@ const CartPage = () => {
                      <ul>
                         <li>
                            <div className="pb-3 text-xl">
-                              Subtotal ({cartItems.reduce((a,c)=> a + c.quantity,0)})
+                              Subtotal ({cart.cartItems.reduce((a,c)=> a + c.quantity,0)})
                               {" "}
                               : $
-                              {cartItems.reduce((a,c)=> a + c.quantity * c.price,0)}
+                              {cart.cartItems.reduce((a,c)=> a + c.quantity * c.price,0)}
                            </div>
                         </li>
                         <li>
