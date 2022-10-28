@@ -5,21 +5,26 @@ import { useContext } from "react"
 import Layout from "../components/Layout"
 import { Store } from "../utils/Store"
 import {XCircleIcon} from "@heroicons/react/24/outline"
+import { useRouter } from "next/router"
 
 const CartPage = () => {
    const { state, dispatch } = useContext(Store)
    const {
       cart
    } = state
+   const router = useRouter()
 
    const removeItemHandler = (item)=>{
-      dispatch({})
+      dispatch({
+         type: "CART_REMOVE_ITEM",
+         payload: item
+      })
    }
 
    return (
       <Layout title={"Shopping Cart"}>
          <h1 className="mb-4 text-xl">Shopping Cart</h1>
-         {cartItems.length === 0 ?
+         {cart.cartItems.length === 0 ?
             (
                <div>Cart is empty. <Link href={"/"}>Go Shopping</Link></div>
             ) : (
@@ -55,14 +60,34 @@ const CartPage = () => {
                                  <td className="p-5 text-right">{item.quantity}</td>
                                  <td className="p-5 text-right">{item.price}</td>
                                  <td className="p-5 text-center">
-                                    <button onClick={()=>{}}>
-                                       <XCircleIcon/>
+                                    <button onClick={()=>{removeItemHandler(item)}}>
+                                       <XCircleIcon className="w-6"/>
                                     </button>
                                  </td>
                               </tr>
                            ))}
                         </tbody>
                      </table>
+                  </div>
+                  <div className="card p-5">
+                     <ul>
+                        <li>
+                           <div className="pb-3 text-xl">
+                              Subtotal ({cartItems.reduce((a,c)=> a + c.quantity,0)})
+                              {" "}
+                              : $
+                              {cartItems.reduce((a,c)=> a + c.quantity * c.price,0)}
+                           </div>
+                        </li>
+                        <li>
+                           <button 
+                              className="primary-button w-full"
+                              onClick={()=> router.push("/shipping")}
+                           >
+                              check out
+                           </button>
+                        </li>
+                     </ul>
                   </div>
                </div>
             )

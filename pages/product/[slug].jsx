@@ -11,6 +11,7 @@ const ProductPage = () => {
    const { slug } = query
    const product = data.products.find(x => x.slug === slug)
    const {state, dispatch} = useContext(Store)
+   const router = useRouter()
 
    if (!product) {
       return <div>Product Not Found</div>
@@ -24,6 +25,7 @@ const ProductPage = () => {
             quantity: 1
          }
       })
+      router.push("/cart")
    }
 
    return (
