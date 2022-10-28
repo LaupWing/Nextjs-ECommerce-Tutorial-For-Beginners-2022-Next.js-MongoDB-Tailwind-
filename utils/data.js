@@ -1,3 +1,5 @@
+import bcrypt from "bcrypt"
+
 const data = {
    users: [
       {
