@@ -29,7 +29,7 @@ function reducer(state, action){
             } : item) : 
             [...state.cart.cartItems, newItem]
          
-         Cookies.set(JSON.stringify({
+         Cookies.set("cart",JSON.stringify({
             ...state.cart,
             cartItems
          }))
