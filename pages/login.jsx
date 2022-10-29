@@ -2,6 +2,7 @@ import Link from "next/link"
 import React from 'react'
 import { useForm } from "react-hook-form"
 import Layout from "../components/Layout"
+import { signIn } from "next-auth"
 
 const LoginPage = () => {
    const {
@@ -10,8 +11,19 @@ const LoginPage = () => {
       formState: { errors }
    } = useForm()
 
-   const submitHandler = ({ email, password }) => {
-      console.log(email, password)
+   const submitHandler = async ({ email, password }) => {
+      try {
+         const result = await signIn("credentials", {
+            redirect: false,
+            email,
+            password
+         })
+         if(result.error){
+            toast.error(result.error)
+         }
+      } catch (e) {
+         toast.error(getError(err))
+      }
    }
 
    return (
@@ -28,29 +40,29 @@ const LoginPage = () => {
                   className="w-full"
                   id="email"
                   autoFocus
-                  {...register("email", { 
+                  {...register("email", {
                      required: "Please enter email",
-                     pattern:{
+                     pattern: {
                         value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/i,
                         message: "Please enter valid email"
                      }
-                   })}
+                  })}
                />
                {errors.email && (<div className="text-red-500">{errors.email.message}</div>)}
             </div>
             <div className="mb-4">
                <label htmlFor="password">Password</label>
-               <input 
-                  type="password" 
-                  className="w-full" 
-                  id="password" 
-                  autoFocus 
+               <input
+                  type="password"
+                  className="w-full"
+                  id="password"
+                  autoFocus
                   {...register("password", {
                      required: "Please enter password",
-                     minLength: { 
-                        value: 6, 
+                     minLength: {
+                        value: 6,
                         message: "Password has to be more than 3 characters"
-                  }
+                     }
                   })}
                />
                {errors.password && (<div className="text-red-500">{errors.password.message}</div>)}
