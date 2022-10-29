@@ -1,20 +1,40 @@
+import { useRouter } from "next/router"
 import React from 'react'
+import { useEffect } from "react"
+import { useContext } from "react"
 import { useForm } from "react-hook-form"
 import CheckoutWizard from "../components/CheckoutWizard"
 import Layout from "../components/Layout"
+import { Store } from "../utils/Store"
 
 const ShippingPage = () => {
    const {
       handleSubmit,
       register,
       formState: { errors },
-      setValue,
-      getValues
+      setValue
    } = useForm()
+   const { dispatch, state } = useContext(Store)
+   const { cart: {shippingAddress} } = state
+   const router = useRouter()
 
-   const submitHandler = () =>{
-
+   const submitHandler = ({ fullName, address, city, postalCode, country }) => {
+      dispatch({
+         type: "SAVE_SHIPPING_ADDRESS",
+         payload:{
+            fullName, address, city, postalCode, country
+         }
+      })  
+      router.push("/payment")
    }
+
+   useEffect(()=>{
+      setValue("fullName", shippingAddress.fullName)
+      setValue("address", shippingAddress.address)
+      setValue("city", shippingAddress.city)
+      setValue("postalCode", shippingAddress.postalCode)
+      setValue("country", shippingAddress.country)
+   },[setValue, shippingAddress])
 
    return (
       <Layout title={"Shipping Address"}>
@@ -26,8 +46,8 @@ const ShippingPage = () => {
             <h1 className="mb-4 text-xl">Shipping Address</h1>
             <div className="mb-4">
                <label htmlFor="fullName">Full Name</label>
-               <input 
-                  type="text" 
+               <input
+                  type="text"
                   id="fullName"
                   autoFocus
                   {...register("fullName", {
@@ -40,8 +60,8 @@ const ShippingPage = () => {
             </div>
             <div className="mb-4">
                <label htmlFor="address">Address</label>
-               <input 
-                  type="text" 
+               <input
+                  type="text"
                   id="address"
                   autoFocus
                   {...register("address", {
@@ -58,8 +78,8 @@ const ShippingPage = () => {
             </div>
             <div className="mb-4">
                <label htmlFor="city">City</label>
-               <input 
-                  type="text" 
+               <input
+                  type="text"
                   id="city"
                   autoFocus
                   {...register("city", {
@@ -72,8 +92,8 @@ const ShippingPage = () => {
             </div>
             <div className="mb-4">
                <label htmlFor="postalCode">Postal Code</label>
-               <input 
-                  type="text" 
+               <input
+                  type="text"
                   id="postalCode"
                   autoFocus
                   {...register("postalCode", {
@@ -86,8 +106,8 @@ const ShippingPage = () => {
             </div>
             <div className="mb-4">
                <label htmlFor="country">Country</label>
-               <input 
-                  type="text" 
+               <input
+                  type="text"
                   id="country"
                   autoFocus
                   {...register("country", {
@@ -106,4 +126,5 @@ const ShippingPage = () => {
    )
 }
 
+ShippingPage.auth = true
 export default ShippingPage
