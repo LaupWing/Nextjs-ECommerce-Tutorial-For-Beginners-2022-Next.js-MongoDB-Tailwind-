@@ -66,7 +66,7 @@ function reducer(state, action){
             }
          }
       }
-      case "SAVE_SHIPPING_ADDRESS":
+      case "SAVE_SHIPPING_ADDRESS":{
          Cookies.set(
             "cart",
             JSON.stringify({
@@ -86,6 +86,25 @@ function reducer(state, action){
                }
             }
          }
+      }
+      case "SAVE_PAYMENT_METHOD":{
+         Cookies.set(
+            "cart",
+            JSON.stringify({
+               ...cart,
+               shippingAddress:{
+                  ...action.payload
+               }
+            })
+         )
+         return {
+            ...state,
+            cart:{
+               ...state.cart,
+               paymentMethod: action.payload
+            }
+         }
+      }
       default:
          return state
    }
