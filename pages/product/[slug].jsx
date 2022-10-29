@@ -3,24 +3,23 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import React, { useContext } from 'react'
 import Layout from "../../components/Layout"
+import Product from "../../models/Product"
 import data from "../../utils/data"
+import db from "../../utils/db"
 import { Store } from "../../utils/Store"
 
-const ProductPage = () => {
-   const { query } = useRouter()
-   const { slug } = query
-   const product = data.products.find(x => x.slug === slug)
-   const {state, dispatch} = useContext(Store)
+const ProductPage = ({ product }) => {
+   const { dispatch } = useContext(Store)
    const router = useRouter()
 
    if (!product) {
-      return <div>Product Not Found</div>
+      return <Layout title={"Product not found"}>Product Not Found</Layout>
    }
 
-   const addToCartHandler = async ()=>{
+   const addToCartHandler = async () => {
       dispatch({
          type: "CART_ADD_ITEM",
-         payload:{
+         payload: {
             ...product,
             quantity: 1
          }
@@ -64,7 +63,7 @@ const ProductPage = () => {
                      <div>Status</div>
                      <div>{product.countInStock > 0 ? "In stock" : "Unavailable"}</div>
                   </div>
-                  <button 
+                  <button
                      className="primary-button w-full"
                      onClick={addToCartHandler}
                   >
@@ -78,3 +77,17 @@ const ProductPage = () => {
 }
 
 export default ProductPage
+
+export async function getServerSideProps(context) {
+   const { params } = context
+   const { slug } = params
+
+   await db.connect()
+   const product = await Product.findOne({ slug }).lean()
+   await db.disconnect()
+   return {
+      props: {
+         product: product ? db.convertDocToObj(product) : null
+      }
+   }
+}
