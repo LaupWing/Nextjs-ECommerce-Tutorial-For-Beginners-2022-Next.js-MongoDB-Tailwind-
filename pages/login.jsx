@@ -2,9 +2,23 @@ import Link from "next/link"
 import React from 'react'
 import { useForm } from "react-hook-form"
 import Layout from "../components/Layout"
-import { signIn } from "next-auth"
+import { signIn, useSession } from "next-auth/react"
+import { getError } from "../utils/error"
+import { toast } from "react-toastify"
+import { useEffect } from "react"
+import { useRouter } from "next/router"
 
 const LoginPage = () => {
+   const { data: session } = useSession()
+   const router = useRouter()
+   const { redirect } = router.query
+
+   useEffect(() => {
+      if (session?.user) {
+         router.push(redirect || "/")
+      }
+   }, [router, session, redirect])
+
    const {
       handleSubmit,
       register,
@@ -18,7 +32,7 @@ const LoginPage = () => {
             email,
             password
          })
-         if(result.error){
+         if (result.error) {
             toast.error(result.error)
          }
       } catch (e) {

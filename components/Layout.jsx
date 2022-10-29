@@ -1,19 +1,23 @@
+import { useSession } from "next-auth/react"
 import Head from "next/head"
 import Link from "next/link"
 import React from "react"
 import { useState } from "react"
 import { useEffect } from "react"
 import { useContext } from "react"
+import { ToastContainer } from "react-toastify"
 import { Store } from "../utils/Store"
+import "react-toastify/dist/ReactToastify.css"
 
 const Layout = ({ children, title }) => {
+   const { status, data: session } = useSession()
    const { state } = useContext(Store)
    const { cart } = state
    const [cartItemsCount, setCartItemsCount] = useState(0)
 
-   useEffect(()=>{
-      setCartItemsCount(cart.cartItems.reduce((a, c)=> a + c.quantity, 0))
-   },[cart.cartItems])
+   useEffect(() => {
+      setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantity, 0))
+   }, [cart.cartItems])
 
    return (
       <>
@@ -22,6 +26,7 @@ const Layout = ({ children, title }) => {
             <meta name="description" content="Ecommerce website" />
             <link rel="icon" href="/favicon.ico" />
          </Head>
+         <ToastContainer position="bottom-center" limit={1} />
          <div className="flex flex-col min-h-screen justify-between">
             <header>
                <nav className="flex h-12 items-center px-4 justify-between shadow-md">
@@ -37,9 +42,11 @@ const Layout = ({ children, title }) => {
                            </span>
                         )}
                      </Link>
-                     <Link className="p-2" href={"/login"}>
-                        Login
-                     </Link>
+                     {status === "loading" ? "loading" : (
+                        session?.user ? 
+                           session.user.name : 
+                           <Link className="p-2" href={"/login"}>Login</Link>
+                     )}
                   </div>
                </nav>
             </header>
