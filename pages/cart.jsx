@@ -39,6 +39,7 @@ const CartPage = () => {
             quantity: _quantity
          }
       })
+      toast.success("Cart has been updated")
    }
 
    return (
