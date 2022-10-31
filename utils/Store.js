@@ -12,12 +12,18 @@ const initialState = {
       }
 }
 
-function reducer(state, action){
+async function reducer(state, action){
    switch(action.type){
       case "CART_ADD_ITEM": {
          const newItem = action.payload
          const existItem = state. cart.cartItems.find(item=>item.slug === newItem.slug)
-         
+         const { data } = await axios.get(`/api/products/${action.payload._id}`)
+         const quantity = existItem ? existItem.quantity + 1 : 1
+
+         if(data.countInStock < quantity){
+            alert("Sorry. Product is out of stock")
+            return
+         }
 
          if( existItem && (existItem.quantity + 1 > existItem.countInStock)){
             alert("Out of stock")
