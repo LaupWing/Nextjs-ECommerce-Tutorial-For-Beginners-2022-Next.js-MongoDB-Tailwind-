@@ -50,6 +50,7 @@ const PlaceOrderPage = () => {
          dispatch({
             type: "CART_CLEAR_ITEMS"
          })
+         router.push(`/order/${data._id}`)
       } catch (e) {
          setLoading(false)
          toast.error(getError(e))
