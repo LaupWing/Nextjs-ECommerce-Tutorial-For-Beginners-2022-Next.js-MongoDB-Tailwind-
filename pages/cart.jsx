@@ -7,6 +7,8 @@ import { Store } from "../utils/Store"
 import {XCircleIcon} from "@heroicons/react/24/outline"
 import { useRouter } from "next/router"
 import dynamic from "next/dynamic"
+import axios from "axios"
+import { toast } from "react-toastify"
 
 const CartPage = () => {
    const { state, dispatch } = useContext(Store)
@@ -22,8 +24,14 @@ const CartPage = () => {
       })
    }
 
-   const updateCartHandler = (item, quantity)=>{
+   const updateCartHandler = async (item, quantity)=>{
       const _quantity = Number(quantity)
+      const { data } = await axios.get(`/api/products/${item._id}`)
+
+      if(data.countInStock < _quantity){
+         toast.error("Sorry. Product is out of stock")
+      }
+
       dispatch({
          type: "CART_ADD_ITEM",
          payload: {
