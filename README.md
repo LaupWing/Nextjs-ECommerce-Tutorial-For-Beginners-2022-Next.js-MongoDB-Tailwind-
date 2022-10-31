@@ -1,3 +1,6 @@
 # Nextjs Tailwind Ecomerce Website Like Amazon
+> https://www.youtube.com/watch?v=_IBlyR5mRzA
 
-Description
+## Not the best tutorial
+* Business logic is not sperated good enough. Cookies rather in the context of react
+* Fking code is way to long split it up buddy

@@ -111,6 +111,15 @@ async function reducer(state, action){
             }
          }
       }
+      case "CART_CLEAR_ITEMS":{
+         Cookies.set(
+            "cart",
+            JSON.stringify({
+               ...cart,
+               cartItems: []
+            })
+         )
+      }
       default:
          return state
    }
