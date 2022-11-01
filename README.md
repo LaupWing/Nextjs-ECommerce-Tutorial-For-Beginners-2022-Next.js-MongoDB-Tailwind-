@@ -10,3 +10,4 @@
 * React Forms hooks (use Form)
 * Tailwind apply globals
 * Auth and the sessions maybe
+* Whenever buying this but not register ask user to register with redirect to shipping like `/register?redirect=login`
