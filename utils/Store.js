@@ -119,6 +119,13 @@ async function reducer(state, action){
                cartItems: []
             })
          )
+         return {
+            ...state,
+            cart:{
+               ...state.cart,
+               cartItems: []
+            }
+         }
       }
       default:
          return state
