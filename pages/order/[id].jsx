@@ -1,9 +1,13 @@
-import axios from "axios";
-import { useRouter } from "next/router"
-import React, { useReducer } from 'react'
-import { useEffect } from "react";
-import Layout from "../../components/Layout"
-import { getError } from "../../utils/error";
+import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect, useReducer } from 'react';
+import { toast } from 'react-toastify';
+import Layout from '../../components/Layout';
+import { getError } from '../../utils/error';
 
 function reducer(state, action) {
    switch (action.type) {
@@ -39,10 +43,13 @@ function reducer(state, action) {
          state;
    }
 }
+function OrderScreen() {
+   const { data: session } = useSession();
+   // order/:id
+   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 
-const OrderPage = () => {
-   const router = useRouter()
-   const orderId = router.query.id
+   const { query } = useRouter();
+   const orderId = query.id;
 
    const [
       {
@@ -59,8 +66,45 @@ const OrderPage = () => {
       loading: true,
       order: {},
       error: '',
-   })
-
+   });
+   useEffect(() => {
+      const fetchOrder = async () => {
+         try {
+            dispatch({ type: 'FETCH_REQUEST' });
+            const { data } = await axios.get(`/api/orders/${orderId}`);
+            dispatch({ type: 'FETCH_SUCCESS', payload: data });
+         } catch (err) {
+            dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
+         }
+      };
+      if (
+         !order._id ||
+         successPay ||
+         successDeliver ||
+         (order._id && order._id !== orderId)
+      ) {
+         fetchOrder();
+         if (successPay) {
+            dispatch({ type: 'PAY_RESET' });
+         }
+         if (successDeliver) {
+            dispatch({ type: 'DELIVER_RESET' });
+         }
+      } else {
+         const loadPaypalScript = async () => {
+            const { data: clientId } = await axios.get('/api/keys/paypal');
+            paypalDispatch({
+               type: 'resetOptions',
+               value: {
+                  'client-id': clientId,
+                  currency: 'USD',
+               },
+            });
+            paypalDispatch({ type: 'setLoadingStatus', value: 'pending' });
+         };
+         loadPaypalScript();
+      }
+   }, [order, orderId, paypalDispatch, successDeliver, successPay]);
    const {
       shippingAddress,
       paymentMethod,
@@ -73,25 +117,7 @@ const OrderPage = () => {
       paidAt,
       isDelivered,
       deliveredAt,
-   } = order
-
-   useEffect(() => {
-      const fetchOrder = async () => {
-         try {
-            dispatch({ type: "FETCH_REQUEST" })
-            const { data } = await axios.get(`/api/orders/${orderId}`)
-            dispatch({ type: "FETCH_SUCCESS", payload: data })
-         } catch (e) {
-            dispatch({
-               type: "FETCH_FAIL",
-               payload: getError(e)
-            })
-         }
-      }
-      if (!order._id || (order._id && order._id == orderId)) {
-         fetchOrder()
-      }
-   }, [orderId, order])
+   } = order;
 
    function createOrder(data, actions) {
       return actions.order
@@ -276,8 +302,8 @@ const OrderPage = () => {
             </div>
          )}
       </Layout>
-   )
+   );
 }
 
-OrderPage.auth = true
-export default OrderPage
+OrderScreen.auth = true;
+export default OrderScreen;
